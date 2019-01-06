@@ -1,0 +1,36 @@
+<!-- <mat-card>
+  <form>
+      <mat-form-field>
+          <input matInput
+           type="text"
+           name="title"
+           ngModel>
+        </mat-form-field>
+        <mat-form-field>
+          <textarea
+          matInput rows="1"
+          name="content"
+          ngModel></textarea>
+        </mat-form-field>
+        <button
+          mat-raised-button
+          color = "accent"
+          type="" >Save!
+        </button>
+  </form>
+</mat-card> -->
+
+<!-- Old two way binding machanism -->
+<mat-card>
+      <mat-form-field>
+          <input matInput type="text" [(ngModel)]="enteredTitle">
+        </mat-form-field>
+        <mat-form-field>
+          <textarea matInput rows="1" [(ngModel)]="enteredContent"></textarea>
+        </mat-form-field>
+        <button
+          mat-raised-button
+          color = "accent"
+          (click)="onAddPost()" >Save!
+        </button>
+  </mat-card>
