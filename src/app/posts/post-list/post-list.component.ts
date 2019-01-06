@@ -1,33 +1,34 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Post } from '../post.model';
-import { PostsService } from '../post.service';
 import { Subscription } from 'rxjs';
 
-@Component({
+import { Post } from '../post.model';
+import { PostsService } from '../post.service';
+
+@Component ({
   selector: 'app-post-list',
   templateUrl: './post-list.component.html',
   styleUrls: ['./post-list.component.css']
 })
 export class PostListComponent implements OnInit, OnDestroy {
-  posts = [
-    {title : 'Fisrt Post', content: 'This is the first post!', imgUrl : 'https://cdn131.picsart.com/280243461051201.jpg?c256x256'},
-    // tslint:disable-next-line:max-line-length
-    {title : 'Second Post', content: 'This is the first post!', imgUrl : 'https://www.nocoastbestcoast.com/images/lost-forty-chippewa-national-forest-2.jpg'},
-    {title : 'Third Post', content: 'This is the first post!', imgUrl : 'http://www.odessakelley.com/_Media/footprints_hr.jpeg'},
-    {title : 'Fourth Post', content: 'This is the first post!', imgUrl : 'http://www.odessakelley.com/_Media/footprints_hr.jpeg'}
-  ];
-  posts2 = [];
+  // posts = [
+  //   { title: "First Post", content: "This is the first post's content" },
+  //   { title: "Second Post", content: "This is the second post's content" },
+  //   { title: "Third Post", content: "This is the third post's content" }
+  // ];
+  posts: Post[] = [];
   private postsSub: Subscription;
-  constructor(public postsService: PostsService){}
+
+  constructor(public postsService: PostsService) {}
+
   ngOnInit() {
-    //this.posts2 = this.postsService.getPosts();
+    this.postsService.getPosts();
     this.postsSub = this.postsService.getPostUpdateListener()
       .subscribe((posts: Post[]) => {
-        this.posts2 = posts;
+        this.posts = posts;
       });
   }
 
-  ngOnDestoy() {
+  ngOnDestroy() {
     this.postsSub.unsubscribe();
   }
 }

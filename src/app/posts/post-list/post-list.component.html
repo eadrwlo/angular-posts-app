@@ -1,12 +1,16 @@
-<mat-accordion *ngIf="posts2.length > 0">
-  <mat-expansion-panel *ngFor="let post of posts2">
+<mat-accordion *ngIf="posts.length > 0">
+  <mat-expansion-panel *ngFor="let post of posts">
     <mat-expansion-panel-header>
       {{post.title}}
     </mat-expansion-panel-header>
       <p>{{post.content}}
-        <img src={{post.imgUrl}} alt="Smiley face" height="42" width="42">
+        <mat-action-row>
+          <button mat-button color="primary">Edit</button>
+          <button mat-button color="warn">Delete</button>
+        </mat-action-row>
+        <!-- <img src={{post.imgUrl}} alt="Smiley face" height="42" width="42"> -->
         <!-- <img mat-card-image src={{post.imgUrl}} alt="Smiley face" height="42" width="42"> -->
       </p>
   </mat-expansion-panel>
 </mat-accordion>
-<p class="info-text mat-body-1" *ngIf="posts2.length <= 0">No post added yet!</p>
+<p class="info-text mat-body-1" *ngIf="posts.length <= 0">No post added yet!</p>
