@@ -1,26 +1,22 @@
-<!-- <mat-card>
-  <form>
+<mat-card>
+  <form (submit)="onAddPost(postForm)" #postForm="ngForm">
       <mat-form-field>
-          <input matInput
-           type="text"
-           name="title"
-           ngModel>
+          <input matInput type="text" name="title" ngModel required minlength="3" #title="ngModel">
+          <mat-error *ngIf="title.invalid">No content!</mat-error>
         </mat-form-field>
         <mat-form-field>
-          <textarea
-          matInput rows="1"
-          name="content"
-          ngModel></textarea>
+          <textarea matInput rows="1" name="content" ngModel required #content="ngModel"></textarea>
+          <mat-error *ngIf="content.invalid">No content!</mat-error>
         </mat-form-field>
         <button
           mat-raised-button
           color = "accent"
-          type="" >Save!
+          type="submit" >Save!
         </button>
   </form>
-</mat-card> -->
+</mat-card>
 
-<!-- Old two way binding machanism -->
+<!-- Old two way binding machanism
 <mat-card>
       <mat-form-field>
           <input matInput type="text" [(ngModel)]="enteredTitle">
@@ -33,4 +29,4 @@
           color = "accent"
           (click)="onAddPost()" >Save!
         </button>
-  </mat-card>
+  </mat-card> -->
