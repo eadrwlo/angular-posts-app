@@ -8,10 +8,10 @@ import { PostsService } from '../post.service';
   templateUrl: 'post-create.component.html',
   styleUrls: ['./post-create.component.css']
 })
-export class PostCreatorComponent{
+export class PostCreatorComponent {
   enteredContent = '';
   enteredTitle = '';
-  constructor(public postService: PostsService){}
+  constructor(public postService: PostsService) {}
 
   onAddPost(form: NgForm) {
     if (form.invalid) {

@@ -1,8 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 
 import { Post } from '../post.model';
 import { PostsService } from '../post.service';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+
+
 
 @Component ({
   selector: 'app-post-list',
@@ -16,9 +19,13 @@ export class PostListComponent implements OnInit, OnDestroy {
   //   { title: "Third Post", content: "This is the third post's content" }
   // ];
   posts: Post[] = [];
+  posts3: any;
+  new: any;
   private postsSub: Subscription;
+  readonly URL = 'http://localhost:3000/api/';
 
-  constructor(public postsService: PostsService) {}
+  constructor(public postsService: PostsService,
+    private http: HttpClient) {}
 
   ngOnInit() {
     this.postsService.getPosts();
@@ -31,4 +38,19 @@ export class PostListComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.postsSub.unsubscribe();
   }
+
+  sendRotateReq(imageName: String) {
+    //const headers = new HttpHeaders().set('Content-Type', 'application/json'/*'multipart/form-data'*/);
+    const data = {
+      operation : 'rotate',
+      imageName : imageName
+    };
+    this.http.post(this.URL + 'rotate', data).subscribe((res) => {
+      console.log(res);
+    });
+  }
+
+  downloadImageCmd() {
+  }
+
 }

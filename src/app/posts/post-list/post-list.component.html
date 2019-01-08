@@ -11,8 +11,8 @@
     <p>{{post.content}}</p>
     <div class="underPhotoButtons">
       <mat-action-row class="underPhotoButtons">
-        <button mat-button color="primary">Rotate</button>
-        <button mat-button color="warn">Download full size picture</button>
+        <button (click)="sendRotateReq(post.imageName)" mat-button color="primary">Rotate</button>
+        <button (click)="downloadImageCmd()" mat-button color="warn">Download full size picture</button>
       </mat-action-row>
     </div>
 
