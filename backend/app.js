@@ -3,11 +3,16 @@ const app = express();
 const bodyParser = require('body-parser');
 const AWS = require('aws-sdk');
 const uuidv1 = require('uuid/v1');
+const FS = require("fs");
 AWS.config.loadFromPath('./config.json');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false}));
 const sqs = new AWS.SQS({apiVersion: '2012-11-05'});
+const s3 = new AWS.S3({apiVersion: '2006-03-01'});
+AWS.config.setPromisesDependency();
+const s3Handler = require('./s3-handler-module');
 
+//console.log(s3Handler.myDateTime());
 
 app.use((req, res, next) => {
   console.log('Received req in common/');
@@ -16,15 +21,33 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS");
   next();
 });
+
+app.use('/api/filetest', async (req, res, next) => {
+  console.log('Received req in api/filetests');
+  let fileList = await s3Handler.getObjectList(s3);
+  console.log('fileList = ' + JSON.stringify(fileList));
+
+  res.status(201).json({
+  message: 'Got object!',
+  fileList: fileList
+  });
+
+  next();
+});
+
+
 ////s3.us-east-2.amazonaws.com/photo-rotator-storage/photos/wood.jpg
-app.use('/api/posts' , (req, res, next) => {
+app.use('/api/posts' , async (req, res, next) => {
   console.log('Received req in posts');
-  const posts = [
-    { id: 'asdasdasd11', title: 'Photo1', content: 'Wood', imageUrl: 'https://s3.us-east-2.amazonaws.com/image-bucket-polibuda/1.jpg', imageName: 'wood.jpg'},
-    { id: 'asdasdasd12', title: 'Photo2', content: 'Sea', imageUrl: 'https://s3.us-east-2.amazonaws.com/image-bucket-polibuda/2.jpg', imageName: 'sea.jpg'},
-    { id: 'asdasdasd13', title: 'Photo3', content: 'Forest', imageUrl: 'https://s3.us-east-2.amazonaws.com/image-bucket-polibud/3.jpg', imageName: 'forest.jpg'},
-    { id: 'asdasdasd14', title: 'Photo4', content: 'Mountain', imageUrl: 'https://s3.us-east-2.amazonaws.com/photo-rotator-storage/photos/mountain.jpg', imageName: 'mountain.jpg'}
-  ];
+  posts = [];
+  var i = 1;
+  let fileList = await s3Handler.getObjectList(s3);
+  const backetUrl = 'https://s3.us-east-2.amazonaws.com/image-bucket-polibuda/';
+  fileList.forEach(element => {
+    posts.push({ id: 'id-' + i, title: 'Photo' + i, content: 'Random text...', imageUrl: backetUrl + element, imageName: element});
+    i++;
+  });
+
   res.status(200).json({
     message: 'Post fetched successfully',
     posts: posts
@@ -66,9 +89,6 @@ app.post('/api/rotate' , (req, res, next) => {
       }
     });
   }
-
-
-
 });
 
 module.exports = app;
