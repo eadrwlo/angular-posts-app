@@ -22,7 +22,7 @@ export class PostListComponent implements OnInit, OnDestroy {
   posts3: any;
   new: any;
   private postsSub: Subscription;
-  readonly URL = 'http://localhost:3000/api/';
+  readonly URL = 'http://ec2-18-218-10-23.us-east-2.compute.amazonaws.com:3000/api/';
 
   constructor(public postsService: PostsService,
     private http: HttpClient) {}

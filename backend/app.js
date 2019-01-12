@@ -8,6 +8,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false}));
 const sqs = new AWS.SQS({apiVersion: '2012-11-05'});
 
+
 app.use((req, res, next) => {
   console.log('Received req in common/');
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -15,14 +16,14 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS");
   next();
 });
-
+////s3.us-east-2.amazonaws.com/photo-rotator-storage/photos/wood.jpg
 app.use('/api/posts' , (req, res, next) => {
   console.log('Received req in posts');
   const posts = [
-    { id: 'asdasdasd11', title: 'Photo1', content: 'Wood', imageUrl: 'https://s3.us-east-2.amazonaws.com/photo-rotator-storage/photos/wood.jpg', imageName: 'wood.jpg'},
-    { id: 'asdasdasd12', title: 'Photo2', content: 'Sea', imageUrl: 'https://s3.us-east-2.amazonaws.com/photo-rotator-storage/photos/sea.jpg', imageName: 'wood.jpg'},
-    { id: 'asdasdasd13', title: 'Photo3', content: 'Forest', imageUrl: 'https://s3.us-east-2.amazonaws.com/photo-rotator-storage/photos/forest.jpg', imageName: 'wood.jpg'},
-    { id: 'asdasdasd14', title: 'Photo4', content: 'Mountain', imageUrl: 'https://s3.us-east-2.amazonaws.com/photo-rotator-storage/photos/mountain.jpg', imageName: 'wood.jpg'}
+    { id: 'asdasdasd11', title: 'Photo1', content: 'Wood', imageUrl: 'https://s3.us-east-2.amazonaws.com/image-bucket-polibuda/1.jpg', imageName: 'wood.jpg'},
+    { id: 'asdasdasd12', title: 'Photo2', content: 'Sea', imageUrl: 'https://s3.us-east-2.amazonaws.com/image-bucket-polibuda/2.jpg', imageName: 'sea.jpg'},
+    { id: 'asdasdasd13', title: 'Photo3', content: 'Forest', imageUrl: 'https://s3.us-east-2.amazonaws.com/image-bucket-polibud/3.jpg', imageName: 'forest.jpg'},
+    { id: 'asdasdasd14', title: 'Photo4', content: 'Mountain', imageUrl: 'https://s3.us-east-2.amazonaws.com/photo-rotator-storage/photos/mountain.jpg', imageName: 'mountain.jpg'}
   ];
   res.status(200).json({
     message: 'Post fetched successfully',
@@ -53,7 +54,7 @@ app.post('/api/rotate' , (req, res, next) => {
     const params = {
     //MessageAttributes: { imgToRotate },
     MessageBody: imgToRotate,
-    QueueUrl: "https://sqs.us-east-2.amazonaws.com/856630134260/Test.fifo",
+    QueueUrl: "https://sqs.us-east-2.amazonaws.com/669871437165/MyTestQueue.fifo",
     MessageGroupId: "rotateRequests",
     MessageDeduplicationId: uuidv1()
     };
