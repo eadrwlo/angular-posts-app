@@ -1,8 +1,8 @@
+const FS = require('fs');
 var bucketCfg = {
   Bucket: 'image-bucket-polibuda',
   Prefix : ''
 };
-
 
 exports.myDateTime = function () {
   return Date();
@@ -32,34 +32,24 @@ exports.getObjectList = async function (s3Ref) {
   return fileList;
 }
 
-exports.downloadFile = function () {
-    // var params = {
-  //   Bucket: 'image-bucket-polibuda',
-  //   Key : '1.jpg'
-  // };
-
-//   file = FS.createWriteStream("file.jpg");
-//   res.attachment('1.jpg');
-//   s3.getObject(params)
-//   .on('error', function (err) {
-//     console.log(err);
-//   })
-//   .on('httpData', function (chunk) {
-//       file.write(chunk);
-//   })
-//   .on('httpDone', function () {
-//       file.end();
-//   })
-//   .send();
-//   res.writeHead(200, {
-//     'Content-Type': 'image/jpg',
-//     'Content-Length': 54272
-// });
-//   stream = s3.getObject(params).createReadStream();
-//   stream.pipe(res);
-  // res.status(201).json({
-  //   message: 'Rotate command received succesfully'
-  // });
+exports.downloadFile = async function (s3Ref, fileName) {
+  var bucketFileCfg = {
+    Bucket: 'image-bucket-polibuda',
+    Key : fileName
+  };
+  file = FS.createWriteStream('./images/' + fileName);
+  await s3Ref.getObject(bucketFileCfg)
+  .on('error', function (err) {
+    console.log(err);
+  })
+  .on('httpData', function (chunk) {
+      file.write(chunk);
+  })
+  .on('httpDone', function () {
+      file.end();
+      console.log('File downloaded!');
+  })
+  .send();
 }
 
 

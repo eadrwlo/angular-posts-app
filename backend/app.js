@@ -2,17 +2,20 @@ const express = require ('express');
 const app = express();
 const bodyParser = require('body-parser');
 const AWS = require('aws-sdk');
+const path = require('path');
+
 const uuidv1 = require('uuid/v1');
-const FS = require("fs");
-AWS.config.loadFromPath('./config.json');
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false}));
+AWS.config.loadFromPath('./backend/config.json');
 const sqs = new AWS.SQS({apiVersion: '2012-11-05'});
 const s3 = new AWS.S3({apiVersion: '2006-03-01'});
 AWS.config.setPromisesDependency();
 const s3Handler = require('./s3-handler-module');
 
-//console.log(s3Handler.myDateTime());
+//s3Handler.downloadFile(s3, 'file.jpg');
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false}));
+app.use("/images", express.static(path.join("backend/images")));
 
 app.use((req, res, next) => {
   console.log('Received req in common/');
@@ -26,7 +29,6 @@ app.use('/api/filetest', async (req, res, next) => {
   console.log('Received req in api/filetests');
   let fileList = await s3Handler.getObjectList(s3);
   console.log('fileList = ' + JSON.stringify(fileList));
-
   res.status(201).json({
   message: 'Got object!',
   fileList: fileList
@@ -41,24 +43,18 @@ app.use('/api/posts' , async (req, res, next) => {
   console.log('Received req in posts');
   posts = [];
   var i = 1;
+  console.log('After file download');
   let fileList = await s3Handler.getObjectList(s3);
   const backetUrl = 'https://s3.us-east-2.amazonaws.com/image-bucket-polibuda/';
-  fileList.forEach(element => {
-    posts.push({ id: 'id-' + i, title: 'Photo' + i, content: 'Random text...', imageUrl: backetUrl + element, imageName: element});
+  const url = req.protocol + '://' + req.get("host");
+  fileList.forEach(async element => {
+    posts.push({ id: 'id-' + i, title: 'Photo' + i, content: 'Random text...', imageUrl: url + "/images/" + element, imageName: element});
     i++;
   });
 
   res.status(200).json({
     message: 'Post fetched successfully',
     posts: posts
-  });
-  next();
-});
-
-app.use('/api/test' , (req, res, next) => {
-  console.log('Received req in test');
-  res.status(201).json({
-    message: 'Rotate command received succesfully'
   });
   next();
 });
