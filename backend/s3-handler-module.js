@@ -33,24 +33,36 @@ exports.getObjectList = async function (s3Ref) {
 }
 
 exports.downloadFile = async function (s3Ref, fileName) {
-  var bucketFileCfg = {
-    Bucket: 'image-bucket-polibuda',
-    Key : fileName
-  };
-  file = FS.createWriteStream('./images/' + fileName);
-  await s3Ref.getObject(bucketFileCfg)
-  .on('error', function (err) {
-    console.log(err);
-  })
-  .on('httpData', function (chunk) {
+    var bucketFileCfg = {
+      Bucket: 'image-bucket-polibuda',
+      Key : fileName
+    };
+    file = FS.createWriteStream('./backend/images/' + fileName);
+    await s3Ref.getObject(bucketFileCfg)
+    .on('error',  function (err) {
+      console.log(err);
+    })
+    .on('httpData',  function (chunk) {
       file.write(chunk);
-  })
-  .on('httpDone', function () {
+    })
+    .on('httpDone',  function () {
       file.end();
-      console.log('File downloaded!');
-  })
-  .send();
-}
+        console.log('File downloaded!');
+    }).send();
+  }
 
+  exports.downloadFileV2 = async function (s3Ref, fileName) {
+    var bucketFileCfg = {
+      Bucket: 'image-bucket-polibuda',
+      Key : fileName
+    };
+
+    file = FS.createWriteStream('./backend/images/' + fileName);
+
+    await s3Ref.getObject(bucketFileCfg).createReadStream().on('error', function(err){
+      console.log(err);
+    }).pipe(file);
+    console.log('File downloaded, name = ' + bucketFileCfg.Key);
+  }
 
 
